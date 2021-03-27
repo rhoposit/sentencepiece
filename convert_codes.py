@@ -3,7 +3,7 @@ from collections import defaultdict
 
 infile = sys.argv[1]
 outfile = sys.argv[2]
-refile = "/home/smg/v-j-williams/workspace/sentencepiece/topokanji/lists/wikipedia.txt"
+refile = "topokanji/lists/wikipedia.txt"
 
 
 input = open(infile, "r")
