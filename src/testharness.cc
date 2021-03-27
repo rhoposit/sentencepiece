@@ -26,6 +26,8 @@
 #include <vector>
 
 #include "common.h"
+#include "init.h"
+#include "third_party/absl/flags/flag.h"
 #include "third_party/absl/strings/str_cat.h"
 #include "util.h"
 

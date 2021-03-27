@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.!
 
-#include "sentencepiece_processor.h"
-
 #include <map>
 #include <set>
 #include <utility>
@@ -24,6 +22,7 @@
 #include "model_interface.h"
 #include "normalizer.h"
 #include "sentencepiece.pb.h"
+#include "sentencepiece_processor.h"
 #include "third_party/absl/memory/memory.h"
 #include "third_party/absl/strings/numbers.h"
 #include "third_party/absl/strings/str_cat.h"
@@ -45,9 +44,6 @@ const char kSpaceSymbol[] = "\xe2\x96\x81";
 // since this character can be useful both for user and
 // developer. We can easily figure out that <unk> is emitted.
 const char kDefaultUnknownSymbol[] = " \xE2\x81\x87 ";
-
-// REPLACEMENT CHARACTER (U+FFFD) in UTF-8.
-const char kReplacementCharacter[] = "\xef\xbf\xbd";
 }  // namespace
 
 SentencePieceProcessor::SentencePieceProcessor() {}
@@ -366,7 +362,7 @@ util::Status SentencePieceProcessor::PopulateSentencePieceText(
       CHECK_LE_OR_RETURN(orig_end, input.size());
       CHECK_LE_OR_RETURN(orig_begin, orig_end);
       const auto surface =
-          absl::ClippedSubstr(input, orig_begin, orig_end - orig_begin);
+          absl::ClippedSubstr(input.data(), orig_begin, orig_end - orig_begin);
 
       if (is_unk && model_->ByteFallbackEnabled()) {
         // Decomposes an unknown piece into UTF-8 bytes
@@ -524,11 +520,7 @@ util::Status SentencePieceProcessor::Decode(
       }
     }
 
-    if (is_bos_ws &&
-        (!model_proto_ ||
-         (model_proto_ &&
-          (model_proto_->normalizer_spec().add_dummy_prefix() ||
-           model_proto_->normalizer_spec().remove_extra_whitespaces())))) {
+    if (is_bos_ws) {
       // Consume if the current position is bos and
       // piece starts with kSpaceSymbol.
       absl::ConsumePrefix(&piece, kSpaceSymbol);
@@ -546,67 +538,49 @@ util::Status SentencePieceProcessor::Decode(
   RETURN_IF_ERROR(ApplyExtraOptions(decode_extra_options_, spt));
 
   std::string *text = spt->mutable_text();
-  auto SetSurface = [&](int index, absl::string_view surface) {
+  auto SetSurface = [&](int index, const std::string &surface) {
     auto *sp = spt->mutable_pieces(index);
-    sp->set_surface(std::string(surface));
+    sp->set_surface(surface);
     sp->set_begin(text->size());
     sp->set_end(text->size() + surface.size());
-    absl::StrAppend(text, surface);
+    *text += surface;
   };
-
-  auto ProcessBytePieces = [&](int token_index_begin,
-                               int token_index_end) -> util::Status {
-    if (token_index_begin >= token_index_end) {
-      return util::OkStatus();
-    }
-
-    // Constructs byte sequence.
-    std::string bytes;
-    for (int i = token_index_begin; i < token_index_end; ++i) {
-      const auto &sp = spt->pieces(i);
-      const int byte = PieceToByte(sp.piece());
-      CHECK_LE_OR_RETURN(0, byte);
-      bytes.append(1, byte);
-    }
-
-    // Set surfaces of `bytes` for each Unicode character.
-    int offset = 0;
-    const int bytes_len = bytes.size();
-    while (offset < bytes_len) {
-      // Consume `bytes` by one Unicode character.
-      size_t consumed;  // Number of bytes consumed in this iteration.
-      const bool is_valid = string_util::IsValidDecodeUTF8(
-          absl::string_view(bytes).substr(offset), &consumed);
-
-      // Set surfaces of the consumed byte pieces.
-      const int token_index = token_index_begin + offset;
-
-      if (!is_valid) {
-        // The byte piece at `token_index` is structurally invalid. Map it to
-        // REPLACEMENT CHARACTER (U+FFFD).
-        CHECK_EQ_OR_RETURN(consumed, 1);
-        SetSurface(token_index, kReplacementCharacter);
-      } else {
-        const absl::string_view utf8 =
-            absl::string_view(bytes).substr(offset, consumed);
-        for (int j = 0; j < consumed; j++) {
-          // The last byte piece holds the surface of the original unknown
-          // character. The other byte pieces hold an empty string as
-          // surface.
-          if (j == consumed - 1) {
-            SetSurface(token_index + j, utf8);
-          } else {
-            SetSurface(token_index + j, "");
+  auto ProcessBytePieces = [&](int begin, int end) -> util::Status {
+    if (begin < end) {
+      // Constructs byte sequence.
+      std::string bytes;
+      for (int i = begin; i < end; ++i) {
+        const auto &sp = spt->pieces(i);
+        const int byte = PieceToByte(sp.piece());
+        CHECK_LE_OR_RETURN(0, byte);
+        bytes.append(1, byte);
+      }
+      // Decodes byte sequence as UTF-8 and encodes the result into UTF-8 bytes
+      // again.
+      int i = begin;
+      for (const char32 uc :
+           string_util::UTF8ToUnicodeText(absl::string_view(bytes))) {
+        if (uc == kUnicodeError) {
+          // Invalid UTF-8 bytes are mapped to REPLACEMENT CHARACTER (U+FFFD).
+          SetSurface(i++, string_util::UnicodeCharToUTF8(kUnicodeError));
+        } else {
+          const std::string utf8 = string_util::UnicodeCharToUTF8(uc);
+          for (int j = 0; j < utf8.size(); j++) {
+            // The last byte piece holds the surface of the original unknown
+            // character. The other byte pieces hold an empty string as
+            // surface.
+            if (j == utf8.size() - 1) {
+              SetSurface(i++, utf8);
+            } else {
+              SetSurface(i++, "");
+            }
           }
         }
       }
-      offset += consumed;
+      CHECK_EQ_OR_RETURN(i, end);
     }
-    CHECK_EQ_OR_RETURN(token_index_begin + offset, token_index_end);
-
     return util::OkStatus();
   };
-
   int byte_start = 0;
   for (int i = 0; i < spt->pieces_size(); ++i) {
     const auto &sp = spt->pieces(i);
@@ -628,13 +602,8 @@ util::Status SentencePieceProcessor::Decode(
 util::Status SentencePieceProcessor::Decode(const std::vector<int> &ids,
                                             SentencePieceText *spt) const {
   std::vector<std::string> pieces;
-  const int num_pieces = GetPieceSize();
   pieces.reserve(ids.size());
   for (const int id : ids) {
-    if (id < 0 || id >= num_pieces) {
-      return util::Status(util::StatusCode::kOutOfRange,
-                          absl::StrCat("Invalid id: ", id));
-    }
     pieces.emplace_back(IdToPiece(id));
   }
   return Decode(pieces, spt);

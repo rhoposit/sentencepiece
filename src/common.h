@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "config.h"
+#include "third_party/absl/flags/flag.h"
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #define OS_WIN
@@ -131,9 +132,6 @@ enum LogSeverity {
   LOG_SEVERITY_SIZE = 4,
 };
 
-int GetMinLogLevel();
-void SetMinLogLevel(int v);
-
 inline const char *BaseName(const char *path) {
 #ifdef OS_WIN
   const char *p = strrchr(path, '\\');
@@ -146,8 +144,10 @@ inline const char *BaseName(const char *path) {
 }  // namespace logging
 }  // namespace sentencepiece
 
+ABSL_DECLARE_FLAG(int32, minloglevel);
+
 #define LOG(severity)                                                        \
-  (::sentencepiece::logging::GetMinLogLevel() >                              \
+  (absl::GetFlag(FLAGS_minloglevel) >                                        \
    ::sentencepiece::logging::LOG_##severity)                                 \
       ? 0                                                                    \
       : ::sentencepiece::error::Die(                                         \

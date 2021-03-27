@@ -15,26 +15,9 @@
 #ifndef INIT_H_
 #define INIT_H_
 
-#include "common.h"
-#include "third_party/absl/flags/flag.h"
-#include "third_party/absl/flags/parse.h"
-
-ABSL_DECLARE_FLAG(int32, minloglevel);
-
 namespace sentencepiece {
-inline void ParseCommandLineFlags(const char *usage, int *argc, char ***argv,
-                                  bool remove_arg = true) {
-  const auto unused_args = absl::ParseCommandLine(*argc, *argv);
-
-  if (remove_arg) {
-    char **argv_val = *argv;
-    *argv = argv_val = argv_val + *argc - unused_args.size();
-    std::copy(unused_args.begin(), unused_args.end(), argv_val);
-    *argc = static_cast<int>(unused_args.size());
-  }
-
-  logging::SetMinLogLevel(absl::GetFlag(FLAGS_minloglevel));
-}
+void ParseCommandLineFlags(const char *usage, int *argc, char ***argv,
+                           bool remvoe_flags = true);
 }  // namespace sentencepiece
 
 #endif  // INIT_H_

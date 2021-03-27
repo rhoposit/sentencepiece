@@ -6,14 +6,13 @@
 [![GitHub Issues](https://img.shields.io/github/issues/google/sentencepiece.svg)](https://github.com/google/sentencepiece/issues)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5851945fc54947fc9e964f78c3b6bdfa)](https://app.codacy.com/app/taku910/sentencepiece?utm_source=github.com&utm_medium=referral&utm_content=google/sentencepiece&utm_campaign=Badge_Grade_Dashboard)
 [![PyPI version](https://badge.fury.io/py/sentencepiece.svg)](https://badge.fury.io/py/sentencepiece)
-[![PyPi downloads](https://img.shields.io/pypi/dm/sentencepiece?style=flat-square&logo=pypi&logoColor=white)](https://pypi.org/project/sentencepiece/)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
 SentencePiece is an unsupervised text tokenizer and detokenizer mainly for
 Neural Network-based text generation systems where the vocabulary size
 is predetermined prior to the neural model training. SentencePiece implements
-**subword units** (e.g., **byte-pair-encoding (BPE)** [[Sennrich et al.](http://www.aclweb.org/anthology/P16-1162)]) and
+**subword units** (e.g., **byte-pair-encoding (BPE)** [[Sennrich et al.](http://www.aclweb.org/anthology/P16-1162)]) and 
 **unigram language model** [[Kudo.](https://arxiv.org/abs/1804.10959)])
 with the extension of direct training from raw sentences. SentencePiece allows us to make a purely end-to-end system that does not depend on language-specific pre/postprocessing.
 
@@ -29,9 +28,6 @@ with the extension of direct training from raw sentences. SentencePiece allows u
 - **Self-contained**: The same tokenization/detokenization is obtained as long as the same model file is used.
 - **Direct vocabulary id generation**: SentencePiece manages vocabulary to id mapping and can directly generate vocabulary id sequences from raw sentences.
 - **NFKC-based normalization**: SentencePiece performs NFKC-based text normalization.
-
-For those unfamiliar with SentencePiece as a software/algorithm, one can read [a gentle introduction here](https://medium.com/@jacky2wong/understanding-sentencepiece-under-standing-sentence-piece-ac8da59f6b08).
-
 
 ## Comparisons with other implementations
 |Feature|SentencePiece|[subword-nmt](https://github.com/rsennrich/subword-nmt)|[WordPiece](https://arxiv.org/pdf/1609.08144.pdf)|
@@ -88,7 +84,7 @@ Then, this text is segmented into small pieces, for example:
 Since the whitespace is preserved in the segmented text, we can detokenize the text without any ambiguities.
 
 ```
-  detokenized = ''.join(pieces).replace('▁', ' ')
+  detokenized = ''.join(pieces).replace('_', ' ')
 ```
 
 This feature makes it possible to perform detokenization without relying on language-specific resources.
@@ -104,7 +100,7 @@ special symbol. Tokenized sequences do not preserve the necessary information to
 Subword regularization [[Kudo.](https://arxiv.org/abs/1804.10959)] and BPE-droptout [Provilkov et al](https://arxiv.org/abs/1910.13267) are simple regularization methods
 that virtually augment training data with on-the-fly subword sampling, which helps to improve the accuracy as well as robustness of NMT models.
 
-To enable subword regularization, you would like to integrate SentencePiece library
+To enable subword regularization, you would like to integrate SentencePiece library 
 ([C++](doc/api.md#sampling-subword-regularization)/[Python](python/README.md)) into the NMT system to sample one segmentation for each parameter update, which is different from the standard off-line data preparations. Here's the example of [Python library](python/README.md). You can find that 'New York' is segmented differently on each ``SampleEncode (C++)`` or ``encode with enable_sampling=True (Python)`` calls. The details of sampling parameters are found in [sentencepiece_processor.h](src/sentencepiece_processor.h).
 
 ```
@@ -112,7 +108,7 @@ To enable subword regularization, you would like to integrate SentencePiece libr
 >>> s = spm.SentencePieceProcessor(model_file='spm.model')
 >>> for n in range(5):
 ...     s.encode('New York', out_type=str, enable_sampling=True, alpha=0.1, nbest=-1)
-...
+... 
 ['▁', 'N', 'e', 'w', '▁York']
 ['▁', 'New', '▁York']
 ['▁', 'New', '▁Y', 'o', 'r', 'k']
@@ -121,6 +117,18 @@ To enable subword regularization, you would like to integrate SentencePiece libr
 ```
 
 ## Installation
+
+### Building sentencepiece - Using vcpkg
+
+You can download and install sentencepiece using the [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
+
+    git clone https://github.com/Microsoft/vcpkg.git
+    cd vcpkg
+    ./bootstrap-vcpkg.sh
+    ./vcpkg integrate install
+    ./vcpkg install sentencepiece
+
+The sentencepiece port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
 
 ### Python module
 SentencePiece provides Python wrapper that supports both SentencePiece training and segmentation.
@@ -132,7 +140,7 @@ You can install Python binary package of SentencePiece with.
 
 For more detail, see [Python module](python/README.md)
 
-### Build and install SentencePiece command line tools from C++ source
+### C++ (from source)
 The following tools and libraries are required to build SentencePiece:
 
 * [cmake](https://cmake.org/)
@@ -143,11 +151,9 @@ On Ubuntu, the build tools can be installed with apt-get:
 ```
 % sudo apt-get install cmake build-essential pkg-config libgoogle-perftools-dev
 ```
-
-Then, you can build and install command line tools as follows.
+#### Build and Install SentencePiece
 ```
-% git clone https://github.com/google/sentencepiece.git 
-% cd sentencepiece
+% cd /path/to/sentencepiece
 % mkdir build
 % cd build
 % cmake ..
@@ -157,17 +163,8 @@ Then, you can build and install command line tools as follows.
 ```
 On OSX/macOS, replace the last command with `sudo update_dyld_shared_cache`
 
-### Build and install using vcpkg
-
-You can download and install sentencepiece using the [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
-
-    git clone https://github.com/Microsoft/vcpkg.git
-    cd vcpkg
-    ./bootstrap-vcpkg.sh
-    ./vcpkg integrate install
-    ./vcpkg install sentencepiece
-
-The sentencepiece port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
+### TensorFlow module
+See [tensorflow/README.md](tensorflow/README.md)
 
 ## Usage instructions
 ### Train SentencePiece Model
@@ -182,7 +179,7 @@ The sentencepiece port in vcpkg is kept up to date by Microsoft team members and
 * `--character_coverage`: amount of characters covered by the model, good defaults are: `0.9995` for languages with rich character set like Japanse or Chinese and `1.0` for other languages with small character set.
 * `--model_type`: model type. Choose from `unigram` (default), `bpe`, `char`, or `word`. The input sentence must be pretokenized when using `word` type.
 
-Use `--help` flag to display all parameters for training, or see [here](doc/options.md) for an overview.
+Use `--help` flag to display all parameters for training.
 
 ### Encode raw text into sentence pieces/ids
 ```
@@ -242,9 +239,9 @@ You can find that the original input sentence is restored from the vocabulary id
 
 ### Redefine special meta tokens
   By default, SentencePiece uses Unknown (&lt;unk&gt;), BOS (&lt;s&gt;) and EOS (&lt;/s&gt;) tokens which have the ids of 0, 1, and 2 respectively. We can redefine this mapping in the training phase as follows.
-
+  
 ```
-% spm_train --bos_id=0 --eos_id=1 --unk_id=5 --input=... --model_prefix=... --character_coverage=...
+% spm_train --bos_id=0 --eos_id=1 --unk_id=5 --input=... --model_prefix=... --character_coverage=... 
 ```
 When setting -1 id e.g., ```bos_id=-1```, this special token is disabled. Note that the unknow id cannot be disabled.  We can define an id for padding (&lt;pad&gt;) as ```--pad_id=3```.  
 
@@ -280,4 +277,3 @@ Then segment train/test corpus with ```--vocabulary``` option
 * [Python Module](python/README.md)
 * [TensorFlow Module](tensorflow/README.md)
 * [Segmentation and training algorithms in detail]
-

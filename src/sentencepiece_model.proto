@@ -19,6 +19,9 @@ option optimize_for = LITE_RUNTIME;
 
 package sentencepiece;
 
+// BEGIN GOOGLE-INTERNAL
+// LINT.IfChange
+// END GOOGLE-INTERNAL
 // TrainerSpec encodes a various parameters for SentencePiece training.
 message TrainerSpec {
   ///////////////////////////////////////////////////////////////////
@@ -74,7 +77,7 @@ message TrainerSpec {
   // Maximum size of sentences the trainer loads from `input` parameter.
   // Trainer simply loads the `input` files in sequence.
   // It is better to shuffle the input corpus randomly.
-  optional uint64 input_sentence_size = 11 [default = 0];
+  optional int32 input_sentence_size = 11 [default = 0];
   optional bool shuffle_input_sentence = 19 [default = true];
 
   // Maximum size of sentences to make seed sentence pieces.
@@ -246,6 +249,11 @@ message NormalizerSpec {
   // are open to third-party extensions.
   extensions 200 to max;
 }
+// BEGIN GOOGLE-INTERNAL
+// LINT.ThenChange(
+//  //depot/google3/third_party/sentencepiece/src/spm_train_main.cc,
+//  //depot/google3/third_party/sentencepiece/src/spec_parser.h)
+// END GOOGLE-INTERNAL
 
 // Proto to store samples for self-testing.
 message SelfTestData {

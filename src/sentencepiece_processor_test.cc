@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.!
 
-#include "sentencepiece_processor.h"
-
 #include <utility>
 
 #include "builder.h"
@@ -22,6 +20,7 @@
 #include "normalizer.h"
 #include "sentencepiece.pb.h"
 #include "sentencepiece_model.pb.h"
+#include "sentencepiece_processor.h"
 #include "sentencepiece_trainer.h"
 #include "testharness.h"
 #include "third_party/absl/container/flat_hash_map.h"
@@ -686,28 +685,6 @@ TEST(SentencepieceProcessorTest, DecodeTest) {
     EXPECT_EQ("ABC<UNK> DEFG HI", spt.text());
     EXPECT_EQ(8, spt.pieces_size());
   }
-
-  {
-    SentencePieceProcessor sp;
-    auto proto = absl::make_unique<ModelProto>();
-    proto->mutable_trainer_spec()->set_unk_surface("");
-    proto->mutable_normalizer_spec()->set_add_dummy_prefix(false);
-    proto->mutable_normalizer_spec()->set_remove_extra_whitespaces(false);
-    sp.Load(std::move(proto)).IgnoreError();
-
-    auto mock = absl::make_unique<DecodeMockModel>();
-    sp.SetModel(std::move(mock));
-
-    const auto normalization_spec = MakeDefaultNormalizerSpec();
-    sp.SetNormalizer(
-        absl::make_unique<normalizer::Normalizer>(normalization_spec));
-
-    SentencePieceText spt;
-
-    EXPECT_TRUE(sp.Decode(input, &spt).ok());
-    EXPECT_EQ(" ABC DEFG HI", spt.text());
-    EXPECT_EQ(8, spt.pieces_size());
-  }
 }
 
 TEST(SentencepieceProcessorTest, ByteFallbackDecodeTest) {
@@ -742,8 +719,6 @@ TEST(SentencepieceProcessorTest, ByteFallbackDecodeTest) {
       return kMap[id];
     }
 
-    int GetPieceSize() const override { return 256; }
-
     bool IsUnknown(int id) const override { return (id == 0); }
 
     bool IsControl(int id) const override { return (id == 1 || id == 2); }
@@ -762,39 +737,24 @@ TEST(SentencepieceProcessorTest, ByteFallbackDecodeTest) {
       absl::make_unique<normalizer::Normalizer>(normalization_spec));
 
   {
-    const std::vector<std::string> input = {
-        "<s>",
-        "A",
-        "B",
-        // "あ" -> 0xE3 0x81 0x82
-        "<0xE3>",
-        "<0x81>",
-        "<0x82>",
-        // "Z" -> 0x5A
-        "<0x5A>",
-        // "Ω" -> 0xCE 0xA9
-        "<0xCE>",
-        "<0xA9>",
-        "C",
-        // Invalid UTF-8 bytes.
-        "<0xE0>",
-        "<0x80>",
-        // "い" -> 0xE3 0x81 0x84
-        "<0xE3>",
-        "<0x81>",
-        "<0x84>",
-        // REPLACEMENT CHARACTER as byte pieces.
-        "<0xEF>",
-        "<0xBF>",
-        "<0xBD>",
-    };
+    const std::vector<std::string> input = {"<s>", "A", "B",
+                                            // "あ" -> 0xE3 0x81 0x82
+                                            "<0xE3>", "<0x81>", "<0x82>",
+                                            // "Z" -> 0x5A
+                                            "<0x5A>",
+                                            // "Ω" -> 0xCE 0xA9
+                                            "<0xCE>", "<0xA9>", "C",
+                                            // Invalid UTF-8 bytes.
+                                            "<0xE0>", "<0x80>",
+                                            // "い" -> 0xE3 0x81 0x84
+                                            "<0xE3>", "<0x81>", "<0x84>"};
 
     SentencePieceText spt;
     EXPECT_TRUE(sp.Decode(input, &spt).ok());
-    EXPECT_EQ("ABあZΩC\xEF\xBF\xBD\xEF\xBF\xBDい\xEF\xBF\xBD", spt.text());
-    EXPECT_EQ(18, spt.pieces_size());
+    EXPECT_EQ("ABあZΩC\xEF\xBF\xBD\xEF\xBF\xBDい", spt.text());
+    EXPECT_EQ(15, spt.pieces_size());
 
-    for (int i = 0; i < 18; ++i) {
+    for (int i = 0; i < 15; ++i) {
       EXPECT_EQ(input[i], spt.pieces(i).piece());
     }
 
@@ -852,16 +812,6 @@ TEST(SentencepieceProcessorTest, ByteFallbackDecodeTest) {
     EXPECT_EQ(15, spt.pieces(13).end());
     EXPECT_EQ(15, spt.pieces(14).begin());
     EXPECT_EQ(18, spt.pieces(14).end());
-
-    EXPECT_EQ("", spt.pieces(15).surface());
-    EXPECT_EQ("", spt.pieces(16).surface());
-    EXPECT_EQ("\xEF\xBF\xBD", spt.pieces(17).surface());
-    EXPECT_EQ(18, spt.pieces(15).begin());
-    EXPECT_EQ(18, spt.pieces(15).end());
-    EXPECT_EQ(18, spt.pieces(16).begin());
-    EXPECT_EQ(18, spt.pieces(16).end());
-    EXPECT_EQ(18, spt.pieces(17).begin());
-    EXPECT_EQ(21, spt.pieces(17).end());
   }
 }
 
@@ -1137,13 +1087,6 @@ TEST(SentencePieceProcessorTest, EndToEndTest) {
     const std::vector<int> ids = {3, 4, 5};
     EXPECT_TRUE(sp.Decode(ids, &output).ok());
     EXPECT_EQ("cba", output);
-  }
-
-  // Out of range
-  {
-    std::string output;
-    const std::vector<int> ids = {3, 4, 127};
-    EXPECT_FALSE(sp.Decode(ids, &output).ok());
   }
 
   {

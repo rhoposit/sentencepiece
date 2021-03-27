@@ -12,22 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.!
 
-if (SPM_USE_EXTERNAL_ABSL)
-  set(ABSL_FLAGS_SRCS "")
-  set(ABSL_STRINGS_SRCS "")
-  list(APPEND SPM_LIBS absl::strings)
-  list(APPEND SPM_LIBS absl::flags)
-  list(APPEND SPM_LIBS absl::flags_parse)
-  if (MSVC)
-   add_definitions("/D_USE_EXTERNAL_ABSL")
-  else()
-   add_definitions("-D_USE_EXTERNAL_ABSL")
-  endif()
-else()
-  set(ABSL_FLAGS_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/absl/flags/flag.cc)
-  set(ABSL_STRINGS_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/absl/strings/string_view.cc)
-endif()
-
 if (SPM_USE_BUILTIN_PROTOBUF)
   set(SPM_PROTO_HDRS builtin_pb/sentencepiece.pb.h)
   set(SPM_PROTO_SRCS builtin_pb/sentencepiece.pb.cc)
@@ -41,14 +25,12 @@ if (SPM_USE_BUILTIN_PROTOBUF)
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/coded_stream.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/common.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/extension_set.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/generated_enum_util.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/generated_message_table_driven_lite.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/generated_message_util.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/implicit_weak_message.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/int128.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/io_win32.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/message_lite.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/parse_context.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/repeated_field.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/status.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/statusor.cc
@@ -59,7 +41,6 @@ if (SPM_USE_BUILTIN_PROTOBUF)
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/time.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/wire_format_lite.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/zero_copy_stream.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/zero_copy_stream_impl.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/protobuf-lite/zero_copy_stream_impl_lite.cc)
   if (MSVC)
     add_definitions("/DHAVE_PTHREAD /wd4018 /wd4514")
@@ -78,7 +59,6 @@ else()
 endif()
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../third_party)
 
 if (MSVC)
   add_definitions("/D_USE_INTERNAL_STRING_VIEW")
@@ -110,6 +90,7 @@ set(SPM_SRCS
   char_model.cc
   error.cc
   filesystem.cc
+  init.cc
   model_factory.cc
   model_interface.cc
   normalizer.cc
@@ -117,8 +98,8 @@ set(SPM_SRCS
   unigram_model.cc
   util.cc
   word_model.cc
-  ${ABSL_STRINGS_SRCS}
-  ${ABSL_FLAGS_SRCS})
+  ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/absl/strings/string_view.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/absl/flags/flag.cc)
 
 set(SPM_TRAIN_SRCS
   ${SPM_PROTO_HDRS}
@@ -176,7 +157,7 @@ set(SPM_TEST_SRCS
 
 find_package(Threads REQUIRED)
 
-list(APPEND SPM_LIBS ${PROTOBUF_LITE_LIBRARY} Threads::Threads)
+set(SPM_LIBS ${PROTOBUF_LITE_LIBRARY} Threads::Threads)
 
 if (SPM_ENABLE_NFKC_COMPILE)
   find_package(ICU 4.4 COMPONENTS i18n data uc REQUIRED)
@@ -214,13 +195,6 @@ target_link_libraries(sentencepiece_train-static INTERFACE sentencepiece-static 
 if (SPM_ENABLE_SHARED)
   target_link_libraries(sentencepiece ${SPM_LIBS})
   target_link_libraries(sentencepiece_train ${SPM_LIBS} sentencepiece)
-  if ((${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7l") OR
-      (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips") OR
-      (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "m68k") OR
-      (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "ppc") OR
-      (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sh4"))
-    list(APPEND SPM_LIBS "atomic")
-  endif()
   set(SPM_INSTALLTARGETS sentencepiece sentencepiece_train sentencepiece-static sentencepiece_train-static)
   set_target_properties(sentencepiece sentencepiece_train PROPERTIES SOVERSION 0 VERSION 0.0.0)
   set_target_properties(sentencepiece PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS YES)
@@ -291,9 +265,6 @@ install(TARGETS ${SPM_INSTALLTARGETS}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES sentencepiece_trainer.h sentencepiece_processor.h
   DESTINATION ${CMAKE_INSTALL_INCDIR})
-if (NOT SPM_USE_BUILTIN_PROTOBUF)
-  install(FILES ${SPM_PROTO_HDRS} DESTINATION ${CMAKE_INSTALL_INCDIR})
-endif()
 
 file(TO_NATIVE_PATH "${PROJECT_SOURCE_DIR}/data" data_dir)
 
