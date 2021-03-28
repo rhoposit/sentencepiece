@@ -12,7 +12,7 @@ FOLDS = ["train", "dev", "test"]
 
 
 
-def create_plot1(SetVocab, title, filename):
+def create_plot(SetVocab, title, filename):
     plt.xlabel("Vocabulary Size")
     plt.ylabel("Avg. Utterance Length")
     plt.title(title)
