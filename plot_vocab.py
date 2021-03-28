@@ -26,8 +26,9 @@ for s in S:
 
         total_vocab = len(list(Vocab.keys()))
         avg_utt_length = sum(UttLengths) / float(len(UttLengths))
-        SetVocab[s][v] = avg_utt_length
-
+        this_dict = SetVocab[s]
+        this_dict[v] = avg_utt_length
+        SetVocab[s] = this_dict
 
 for fold,dist in SetVocab.items():
     print(fold, dist)
