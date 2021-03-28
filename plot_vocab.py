@@ -50,6 +50,7 @@ for fold in FOLDS:
         total_vocab = len(list(Vocab.keys()))
         avg_utt_length = sum(UttLengths) / float(len(UttLengths))
         n = len(UttLengths)
+        print(folder, fold, v, n)
         this_dict = SetVocab[fold]
         this_dict[v] = avg_utt_length
         SetVocab[fold] = this_dict
