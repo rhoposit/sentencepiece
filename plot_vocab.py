@@ -6,9 +6,9 @@ from collections import defaultdict
 folder = sys.argv[1]
 outfile = ""
 Vsize = [256, 512, 1024, 2048, 4096]
-FOLDS = ["train", "valid", "test"]
+FOLDS = ["train", "dev", "test"]
 
-SetVocab = {"train":defaultdict(float), "valid":defaultdict(float), "test":defaultdict(float)}
+SetVocab = {"train":defaultdict(float), "dev":defaultdict(float), "test":defaultdict(float)}
 for fold in FOLDS:
     for v in Vsize:
         UttLengths = []
