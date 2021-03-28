@@ -42,10 +42,10 @@ for fold in FOLDS:
         for line in data:
             substrings= line.split(" ")
             length = len(substrings)
-            if length < 450:
-                UttLengths.append(len(substrings))
-                for s in substrings:
-                    Vocab[s] += 1
+#            if length < 450:
+             UttLengths.append(len(substrings))
+             for s in substrings:
+                 Vocab[s] += 1
 
         total_vocab = len(list(Vocab.keys()))
         avg_utt_length = sum(UttLengths) / float(len(UttLengths))
