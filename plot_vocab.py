@@ -25,7 +25,7 @@ for s in S:
                 Vocab[s] += 1
 
         total_vocab = len(list(Vocab.keys()))
-        avg_utt_length = sum(L) / float(len(L))
+        avg_utt_length = sum(UttLengths) / float(len(UttLengths))
         SetVocab[s][v] = avg_utt_length
 
 
