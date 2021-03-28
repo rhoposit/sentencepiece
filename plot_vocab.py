@@ -5,7 +5,6 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 
 folder = sys.argv[1]
-outfile = ""
 Vsize = [256, 512, 1024, 2048, 4096]
 FOLDS = ["train", "dev", "test"]
 
@@ -42,12 +41,15 @@ for fold in FOLDS:
         
         for line in data:
             substrings= line.split(" ")
-            UttLengths.append(len(substrings))
-            for s in substrings:
-                Vocab[s] += 1
+            length = len(substrings)
+            if length < 450:
+                UttLengths.append(len(substrings))
+                for s in substrings:
+                    Vocab[s] += 1
 
         total_vocab = len(list(Vocab.keys()))
         avg_utt_length = sum(UttLengths) / float(len(UttLengths))
+        n = len(UttLengths)
         this_dict = SetVocab[fold]
         this_dict[v] = avg_utt_length
         SetVocab[fold] = this_dict
@@ -55,4 +57,4 @@ for fold in FOLDS:
 for fold,dist in SetVocab.items():
     print(fold, dist)
 
-create_plot(SetVocab, "Avg Utterance Length per Sentencepiece Vocab Size", "FoldsVocabUttLength.png")
+create_plot(SetVocab, "Avg Utt Length per Vocab Size", folder+"_VL.png")
