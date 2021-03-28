@@ -6,14 +6,14 @@ from collections import defaultdict
 folder = sys.argv[1]
 outfile = ""
 Vsize = [256, 512, 1024, 2048, 4096]
-S = ["train", "valid", "test"]
+FOLDS = ["train", "valid", "test"]
 
 SetVocab = {"train":defaultdict(float), "valid":defaultdict(float), "test":defaultdict(float)}
-for s in S:
+for fold in FOLDS:
     for v in Vsize:
         UttLengths = []
         Vocab = defaultdict(int)
-        infile = folder+"/"+s+".code.conv."+str(v)
+        infile = folder+"/"+fold+".code.conv."+str(v)
         input = open(infile, "r")
         data = input.read().split("\n")[:-1]
         input.close()
@@ -26,9 +26,9 @@ for s in S:
 
         total_vocab = len(list(Vocab.keys()))
         avg_utt_length = sum(UttLengths) / float(len(UttLengths))
-        this_dict = SetVocab[s]
+        this_dict = SetVocab[fold]
         this_dict[v] = avg_utt_length
-        SetVocab[s] = this_dict
+        SetVocab[fold] = this_dict
 
 for fold,dist in SetVocab.items():
     print(fold, dist)
