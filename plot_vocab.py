@@ -41,9 +41,9 @@ for fold in FOLDS:
             data = input.read().split("\n")[:-1]
             input.close()
             for line in data:
-                substrings= line.split()
+                substrings= line.split("")
                 length = len(substrings)
-                UttLengths.append(len(substrings))
+                UttLengths.append(len(line))
                 for s in substrings:
                     Vocab[s] += 1
         else:
