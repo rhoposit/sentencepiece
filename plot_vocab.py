@@ -5,7 +5,8 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 
 folder = sys.argv[1]
-Vsize = [256, 512, 1024, 2048, 4096]
+orig = int(folder.split("_")[-1])
+Vsize = [orig, 256, 512, 1024, 2048, 4096]
 FOLDS = ["train", "dev", "test"]
 
 
@@ -34,7 +35,10 @@ for fold in FOLDS:
     for v in Vsize:
         UttLengths = []
         Vocab = defaultdict(int)
-        infile = folder+"/"+fold+".code.conv."+str(v)
+        if v < 256:
+            infile = folder+"/"+fold+".code.conv"
+        else:
+            infile = folder+"/"+fold+".code.conv."+str(v)
         input = open(infile, "r")
         data = input.read().split("\n")[:-1]
         input.close()
