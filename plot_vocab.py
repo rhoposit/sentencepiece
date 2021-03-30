@@ -37,19 +37,26 @@ for fold in FOLDS:
         Vocab = defaultdict(int)
         if v < 256:
             infile = folder+"/"+fold+".code.conv"
+            input = open(infile, "r")
+            data = input.read().split("\n")[:-1]
+            input.close()
+            for line in data:
+                substrings= line.split()
+                length = len(substrings)
+                UttLengths.append(len(substrings))
+                for s in substrings:
+                    Vocab[s] += 1
         else:
             infile = folder+"/"+fold+".code.conv."+str(v)
-        input = open(infile, "r")
-        data = input.read().split("\n")[:-1]
-        input.close()
-        
-        for line in data:
-            substrings= line.split(" ")
-            length = len(substrings)
-#            if length < 450:
-            UttLengths.append(len(substrings))
-            for s in substrings:
-                Vocab[s] += 1
+            input = open(infile, "r")
+            data = input.read().split("\n")[:-1]
+            input.close()
+            for line in data:
+                substrings= line.split(" ")
+                length = len(substrings)
+                UttLengths.append(len(substrings))
+                for s in substrings:
+                    Vocab[s] += 1
 
         total_vocab = len(list(Vocab.keys()))
         avg_utt_length = sum(UttLengths) / float(len(UttLengths))
