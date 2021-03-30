@@ -41,10 +41,8 @@ for fold in FOLDS:
             data = input.read().split("\n")[:-1]
             input.close()
             for line in data:
-                substrings= line.split("")
-                length = len(substrings)
                 UttLengths.append(len(line))
-                for s in substrings:
+                for char in line:
                     Vocab[s] += 1
         else:
             infile = folder+"/"+fold+".code.conv."+str(v)
