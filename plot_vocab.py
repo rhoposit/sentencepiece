@@ -42,7 +42,7 @@ for fold in FOLDS:
             input.close()
             for line in data:
                 UttLengths.append(len(line))
-                for char in line:
+                for s in line:
                     Vocab[s] += 1
         else:
             infile = folder+"/"+fold+".code.conv."+str(v)
