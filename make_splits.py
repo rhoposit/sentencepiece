@@ -17,7 +17,6 @@ def load_txtcode(indir, set_):
             input.close()
             t = data.split("\t")[0]
             c = data.split("\t")[1].replace(" ", ".")
-            print(t)
             text.append(t)
             codes.append(c)
         except:
