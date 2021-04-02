@@ -67,7 +67,7 @@ def save_folds(outfolder, strings, codes, set_, fold, phn_txt):
     output = open(outfile2, "w")
     output.write(outstring2)
     output.close()
-                
+    print(len(set_), len(S))
 
 
 
