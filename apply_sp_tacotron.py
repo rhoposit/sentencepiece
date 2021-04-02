@@ -26,8 +26,8 @@ def load_txtcode(indir, set_):
             c = data.split("\t")[1].replace(" ", ".")
             text[f] = str(t)
             codes[f] = c
-            print(f, t)
-            print(f, c)
+#            print(f, t)
+#            print(f, c)
         except:
             continue
     return text, codes
@@ -140,9 +140,7 @@ set_files = load_set(test_set)
 T, C = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
 code_revised = revise_codes(C, sp_model, set_files)
-#save_sp(spout_folder_text, T, code_revised, set_files)
-#print(T)
-#print(phn)
+save_sp(spout_folder_text, T, code_revised, set_files)
 save_sp(spout_folder_phones, phn, code_revised, set_files)
 
 
