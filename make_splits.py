@@ -62,7 +62,7 @@ elif data_type == "phn100":
     test_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/test.csv"
     training_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/train.csv"
     validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
-    infolder = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_432120/all_vctk_phn100"
+    infolder = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_648024/all_vctk"
 elif data_type == "siwis":
 #    outfolder = "all_siwis_512"
     outfolder = "all_siwis_161"
