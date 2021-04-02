@@ -141,6 +141,8 @@ T, C = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
 code_revised = revise_codes(C, sp_model, set_files)
 #save_sp(spout_folder_text, T, code_revised, set_files)
+
+print(phn)
 save_sp(spout_folder_phones, phn, code_revised, set_files)
 
 
