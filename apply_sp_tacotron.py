@@ -1,5 +1,6 @@
 import os, sys
 import sentencepiece as spm
+from collections import defaultdict
 
 refile = "topokanji/lists/wikipedia.txt"
 input = open(refile, "r")
