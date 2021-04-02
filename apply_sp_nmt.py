@@ -100,8 +100,8 @@ elif data_type == "phn100":
     validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
     infolder = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_648024/all_vctk"
     phnfolder = "/home/s1738075/data/all_vctk_170_phones"
-    folder_text = "/home/s1738075/espnet_private/egs/iwslt16/all_vctk_ph100.txt/data"
-    folder_phones = "/home/s1738075/espnet_private/egs/iwslt16/all_vctk_ph100.phn/data"
+    folder_text = "/home/s1738075/espnet_private/egs/iwslt16/all_vctk_phn100.txt/data"
+    folder_phones = "/home/s1738075/espnet_private/egs/iwslt16/all_vctk_phn100.phn/data"
 elif data_type == "siwis":
 #    outfolder = "all_siwis_512"
     outfolder = "all_siwis_161"
