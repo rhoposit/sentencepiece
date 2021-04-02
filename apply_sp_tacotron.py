@@ -73,6 +73,7 @@ def revise_codes(code, model, set_):
         # get the codes for this string of kanji characters
         rev_code = s.encode(kanjistring, out_type=str)
         rev_code_id = s.encode(kanjistring, out_type=int)
+        rev_code_id = [str(c) for c in rev_code_id]
         print("orig", len(codestring), "kanji", len(kanjilist), "SP", len(rev_code_id))
         revised_codes[f] = " ".join(rev_code_id)
     return revised_codes
