@@ -49,22 +49,21 @@ def load_phones(indir, set_):
 
 
 def save_sp(outfolder, text, codes, set_):
-    #make the outfolder
+    n_failed = 0
     os.makedirs(outfolder, exist_ok=True)
-#    print(text)
-#    for k,v in text.items():
-#        print(k,v)
     for f in set_:
-        string1 = text[f]
-        string2 = codes[f]
-#        print(f, type(string1), string1)
-#        print(f, type(string2), string2)
-        outfile = outfolder+"/"+f+".txt"
-        output = open(outfile, "w")
-        outstring = string1 + "\t" + string2
-        output.write(outstring)
-        output.close()
-    
+        try:
+            string1 = text[f]
+            string2 = codes[f]
+            outfile = outfolder+"/"+f+".txt"
+            output = open(outfile, "w")
+            outstring = string1 + "\t" + string2
+            output.write(outstring)
+            output.close()
+        except:
+            n_failed += 1
+            continue
+    print("total failed: ", n_failed, " of ", len(set_))
 
 def revise_codes(code, model, set_):
     revised_codes = defaultdict(str)
@@ -141,11 +140,8 @@ set_files = load_set(test_set)
 T, C = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
 code_revised = revise_codes(C, sp_model, set_files)
-#for k,v in T.items():
-#    print(k,v)
-print(T)
 save_sp(spout_folder_text, T, code_revised, set_files)
-#save_sp(spout_folder_phones, phn, code_revised, set_files)
+save_sp(spout_folder_phones, phn, code_revised, set_files)
 
 
 #train_set_files = load_set(training_set)
