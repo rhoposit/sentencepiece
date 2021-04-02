@@ -99,7 +99,7 @@ if data_type == "vctk":
 #    infolder = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_512"
     infolder = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170"
     phnfolder = "/home/s1738075/data/all_vctk_170_phones"
-    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_text_"+str(vocab_sizze)
+    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_text_"+str(vocab_size)
     spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_phones_"+str(vocab_size)
     sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 elif data_type == "phn50":
