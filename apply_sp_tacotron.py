@@ -152,7 +152,7 @@ save_sp(spout_folder_text, T, code_revised, set_files)
 save_sp(spout_folder_phones, phn, code_revised, set_files)
 
 print("processing training set")
-set_files = load_set(train_set)
+set_files = load_set(training_set)
 T, C = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
 code_revised = revise_codes(C, sp_model, set_files)
