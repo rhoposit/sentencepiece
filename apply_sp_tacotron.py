@@ -90,6 +90,18 @@ def revise_codes(code, model, set_):
         revised_codes[f] = " ".join(rev_code_id)
     return revised_codes
 
+def save_phones_folds(outfolder, phones, set_, fold):
+    outfile = outfolder+"/"+fold+".phone"
+    P = []
+    for f in set_:
+        P.append(phones[f])
+    outstring = "\n".join(P)
+    output = open(outfile, "w")
+    output.write(outstring)
+    output.close()
+                
+
+
 
 data_type = sys.argv[1]
 vocab_size = sys.argv[2]
@@ -142,28 +154,30 @@ elif data_type == "siwis":
 
 print("processing test set")
 set_files = load_set(test_set)
-T, C = load_txtcode(infolder, set_files)
+#T, C = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
-code_revised = revise_codes(C, sp_model, set_files)
-save_sp(spout_folder_text, T, code_revised, set_files)
-save_sp(spout_folder_phones, phn, code_revised, set_files)
-
+#code_revised = revise_codes(C, sp_model, set_files)
+#save_sp(spout_folder_text, T, code_revised, set_files)
+#save_sp(spout_folder_phones, phn, code_revised, set_files)
+save_phones_folds(outfolder, phn, set_files, "test")
 
 print("processing validation set")
 set_files = load_set(validation_set)
-T, C = load_txtcode(infolder, set_files)
+#T, C = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
-code_revised = revise_codes(C, sp_model, set_files)
-save_sp(spout_folder_text, T, code_revised, set_files)
-save_sp(spout_folder_phones, phn, code_revised, set_files)
+#code_revised = revise_codes(C, sp_model, set_files)
+#save_sp(spout_folder_text, T, code_revised, set_files)
+#save_sp(spout_folder_phones, phn, code_revised, set_files)
+save_phones_folds(outfolder, phn, set_files, "dev")
 
 print("processing training set")
 set_files = load_set(training_set)
-T, C = load_txtcode(infolder, set_files)
+#T, C = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
-code_revised = revise_codes(C, sp_model, set_files)
-save_sp(spout_folder_text, T, code_revised, set_files)
-save_sp(spout_folder_phones, phn, code_revised, set_files)
+#code_revised = revise_codes(C, sp_model, set_files)
+#save_sp(spout_folder_text, T, code_revised, set_files)
+#save_sp(spout_folder_phones, phn, code_revised, set_files)
+save_phones_folds(outfolder, phn, set_files, "train")
 
 
 
