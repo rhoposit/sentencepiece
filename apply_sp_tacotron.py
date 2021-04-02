@@ -52,7 +52,7 @@ def save_sp(outfolder, strings, codes, set_):
     #make the outfolder
     os.makedirs(outfolder, exist_ok=True)
     for f in set_:
-        print f
+        print(f)
         string1 = strings[f]
         string2 = codes[f]
 #        print(type(string1), string1)
