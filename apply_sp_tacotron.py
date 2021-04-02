@@ -135,7 +135,7 @@ elif data_type == "siwis":
     sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 
 
-    
+print("processing test set")
 set_files = load_set(test_set)
 T, C = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
@@ -143,9 +143,21 @@ code_revised = revise_codes(C, sp_model, set_files)
 save_sp(spout_folder_text, T, code_revised, set_files)
 save_sp(spout_folder_phones, phn, code_revised, set_files)
 
+print("processing validation set")
+set_files = load_set(validation_set)
+T, C = load_txtcode(infolder, set_files)
+phn = load_phones(phnfolder, set_files)
+code_revised = revise_codes(C, sp_model, set_files)
+save_sp(spout_folder_text, T, code_revised, set_files)
+save_sp(spout_folder_phones, phn, code_revised, set_files)
 
-#train_set_files = load_set(training_set)
-#dev_set_files = load_set(validation_set)
+print("processing training set")
+set_files = load_set(train_set)
+T, C = load_txtcode(infolder, set_files)
+phn = load_phones(phnfolder, set_files)
+code_revised = revise_codes(C, sp_model, set_files)
+save_sp(spout_folder_text, T, code_revised, set_files)
+save_sp(spout_folder_phones, phn, code_revised, set_files)
 
 
 
