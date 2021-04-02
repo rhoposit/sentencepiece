@@ -52,11 +52,10 @@ def save_sp(outfolder, strings, codes, set_):
     #make the outfolder
     os.makedirs(outfolder, exist_ok=True)
     for f in set_:
-        print(f)
         string1 = strings[f]
         string2 = codes[f]
-#        print(type(string1), string1)
-#        print(type(string2), string2)
+        print(f, type(string1), string1)
+        print(f, type(string2), string2)
         outfile = outfolder+"/"+f+".txt"
         output = open(outfile, "w")
         outstring = string1 + "\t" + string2
