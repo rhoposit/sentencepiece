@@ -72,7 +72,6 @@ def save_folds(outfolder, strings, codes, set_, fold, phn_txt):
 
 
 data_type = sys.argv[1]
-vocab_size = sys.argv[2]
 
 if data_type == "vctk":
 #    outfolder = "all_vctk_512"
@@ -94,7 +93,6 @@ if data_type == "vctk":
 #    phnfolder = "/home/s1738075/data/all_vctk_phn50_phones"
 ##    spout_folder_text = "/home/s1738075/espnet_private/egs/iwslt16/all_vctk_170.txt"
 ##    spout_folder_phones = "/home/s1738075/espnet_private/egs/iwslt16/all_vctk_170.phn"
-#    sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 elif data_type == "phn100":
     outfolder= "all_vctk_phn_100"
     test_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/test.csv"
