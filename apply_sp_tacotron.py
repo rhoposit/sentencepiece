@@ -51,7 +51,7 @@ def load_phones(indir, set_):
 def save_sp(outfolder, text, codes, set_):
     #make the outfolder
     os.makedirs(outfolder, exist_ok=True)
-    print(text)
+#    print(text)
 #    for k,v in text.items():
 #        print(k,v)
     for f in set_:
@@ -143,6 +143,7 @@ phn = load_phones(phnfolder, set_files)
 code_revised = revise_codes(C, sp_model, set_files)
 #for k,v in T.items():
 #    print(k,v)
+print(T)
 save_sp(spout_folder_text, T, code_revised, set_files)
 #save_sp(spout_folder_phones, phn, code_revised, set_files)
 
