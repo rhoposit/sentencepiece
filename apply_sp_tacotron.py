@@ -134,8 +134,8 @@ set_files = load_set(test_set)
 text, code = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
 code_revised = revise_codes(code, sp_model, set_files)
-save_sp(spoutfolder_text, text, code_revised, set_files)
-save_sp(spoutfolder_phones, phn, code_revised, set_files)
+save_sp(spout_folder_text, text, code_revised, set_files)
+save_sp(spout_folder_phones, phn, code_revised, set_files)
 
 
 #train_set_files = load_set(training_set)
