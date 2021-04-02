@@ -62,7 +62,7 @@ def revise_codes(code, model, set_):
     revised_codes = defaultdict(str)
     s = spm.SentencePieceProcessor(model_file=model)
     for f in set_:
-        codestring = code[f].split(" ")
+        codestring = code[f].split(".")
         # convert to kanji characters
         kanjilist = []
         for c in codestring:
