@@ -39,7 +39,7 @@ def load_phones(indir, set_):
         try:
             fname = indir+"/"+f+".txt"
             input = open(fname, "rb")
-            data = input.read()[0]
+            data = input.read()
             input.close()
             phones[f] = data
         except:
