@@ -98,8 +98,8 @@ if data_type == "vctk":
 #    infolder = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_512"
     infolder = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170"
     phnfolder = "/home/s1738075/data/all_vctk_170_phones"
-    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_text+"+str(vocab_sizze)
-    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_text+"+str(vocab_size)
+    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_text_"+str(vocab_sizze)
+    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_phones_"+str(vocab_size)
     sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 elif data_type == "phn50":
     outfolder= "all_vctk_phn_50"
@@ -108,8 +108,8 @@ elif data_type == "phn50":
     validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
     infolder = "/home/s1738075/special/L1_dat_files/sys5_phn50/phn50_nnnn/all_vctk_phn50"
     phnfolder = "/home/s1738075/data/all_vctk_phn50_phones"
-    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_phn50/vctk_nnnn/all_vctk_phn50_SP_text+"+str(vocab_size)
-    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_phn50/vctk_nnnn/all_vctk_phn50_SP_text+"+str(vocab_size)
+    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_phn50/vctk_nnnn/all_vctk_phn50_SP_text_"+str(vocab_size)
+    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_phn50/vctk_nnnn/all_vctk_phn50_SP_phones_"+str(vocab_size)
     sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 elif data_type == "phn100":
     outfolder= "all_vctk_phn_100"
@@ -118,8 +118,8 @@ elif data_type == "phn100":
     validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
     infolder = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_nnnn/all_vctk_phn100"
     phnfolder = "/home/s1738075/data/all_vctk_phn100_phones"
-    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_nnnn/all_vctk_phn100_SP_text+"+str(vocab_size)
-    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_nnnn/all_vctk_phn100_SP_text+"+str(vocab_size)
+    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_nnnn/all_vctk_phn100_SP_text_"+str(vocab_size)
+    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_nnnn/all_vctk_phn100_SP_phones_"+str(vocab_size)
     sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 elif data_type == "siwis":
 #    outfolder = "all_siwis_512"
@@ -130,8 +130,8 @@ elif data_type == "siwis":
 #    infolder = "/home/s1738075/special/L1_dat_files/sys5_lang/siwis_552024/all_siwis_512"
     infolder = "/home/s1738075/special/L1_dat_files/sys5_lang/siwis_552024/all_siwis_161"
     phnfolder = "/home/s1738075/data/SIWIS/phones"
-    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_lang/siwis_552024/all_siwis_161_SP_text+"+str(vocab_size)
-    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_lang/siwis_552024/all_siwis_161_SP_text+"+str(vocab_size)
+    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_lang/siwis_552024/all_siwis_161_SP_text_"+str(vocab_size)
+    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_lang/siwis_552024/all_siwis_161_SP_phones_"+str(vocab_size)
     sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 
 
