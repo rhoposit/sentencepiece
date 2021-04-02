@@ -48,6 +48,7 @@ def load_phones(indir, set_):
 
 def save_sp(outfolder, strings, codes, set_):
     #make the outfolder
+    os.makedirs(outfolder, exist_ok=True)
     for f in set_:
         string1 = strings[f]
         string2 = codes[f]
