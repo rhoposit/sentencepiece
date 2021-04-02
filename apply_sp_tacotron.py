@@ -41,7 +41,8 @@ def load_phones(indir, set_):
             input = open(fname, "rb")
             data = input.read()
             input.close()
-            phones[f] = str(data)
+            if phones != "":
+                phones[f] = str(data.decode('utf-8'))
         except:
             continue
     return phones
@@ -55,11 +56,14 @@ def save_sp(outfolder, text, codes, set_):
         try:
             string1 = text[f]
             string2 = codes[f]
-            outfile = outfolder+"/"+f+".txt"
-            output = open(outfile, "w")
-            outstring = string1 + "\t" + string2
-            output.write(outstring)
-            output.close()
+            if string1 != "" and string2 != "":
+                outfile = outfolder+"/"+f+".txt"
+                output = open(outfile, "w")
+                outstring = str(string1) + "\t" + string2
+                output.write(outstring)
+                output.close()
+            else:
+                n_failed += 1
         except:
             n_failed += 1
             continue
@@ -102,25 +106,25 @@ if data_type == "vctk":
     spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_text_"+str(vocab_size)
     spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170_SP_phones_"+str(vocab_size)
     sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
-elif data_type == "phn50":
-    outfolder= "all_vctk_phn_50"
-    test_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/test.csv"
-    training_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/train.csv"
-    validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
-    infolder = "/home/s1738075/special/L1_dat_files/sys5_phn50/phn50_nnnn/all_vctk_phn50"
-    phnfolder = "/home/s1738075/data/all_vctk_phn50_phones"
-    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_phn50/vctk_nnnn/all_vctk_phn50_SP_text_"+str(vocab_size)
-    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_phn50/vctk_nnnn/all_vctk_phn50_SP_phones_"+str(vocab_size)
-    sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
+#elif data_type == "phn50":
+#    outfolder= "all_vctk_phn_50"
+#    test_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/test.csv"
+#    training_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/train.csv"
+#    validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
+#    infolder = "/home/s1738075/special/L1_dat_files/sys5_phn50/phn50_nnnn/all_vctk_phn50"
+#    phnfolder = "/home/s1738075/data/all_vctk_phn50_phones"
+#    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_phn50/vctk_nnnn/all_vctk_phn50_SP_text_"+str(vocab_size)
+#    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_phn50/vctk_nnnn/all_vctk_phn50_SP_phones_"+str(vocab_size)
+#    sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 elif data_type == "phn100":
     outfolder= "all_vctk_phn_100"
     test_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/test.csv"
     training_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/train.csv"
     validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
-    infolder = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_nnnn/all_vctk_phn100"
-    phnfolder = "/home/s1738075/data/all_vctk_phn100_phones"
-    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_nnnn/all_vctk_phn100_SP_text_"+str(vocab_size)
-    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_nnnn/all_vctk_phn100_SP_phones_"+str(vocab_size)
+    infolder = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_648024/all_vctk"
+    phnfolder = "/home/s1738075/data/all_vctk_170_phones"
+    spout_folder_text = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_648024/all_vctk_phn100_SP_text_"+str(vocab_size)
+    spout_folder_phones = "/home/s1738075/special/L1_dat_files/sys5_phn100/phn100_648024/all_vctk_phn100_SP_phones_"+str(vocab_size)
     sp_model = "/home/s1738075/sentencepiece/models/"+outfolder+".code."+vocab_size+".model"
 elif data_type == "siwis":
 #    outfolder = "all_siwis_512"
@@ -143,6 +147,7 @@ phn = load_phones(phnfolder, set_files)
 code_revised = revise_codes(C, sp_model, set_files)
 save_sp(spout_folder_text, T, code_revised, set_files)
 save_sp(spout_folder_phones, phn, code_revised, set_files)
+
 
 print("processing validation set")
 set_files = load_set(validation_set)
