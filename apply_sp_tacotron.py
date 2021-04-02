@@ -26,6 +26,8 @@ def load_txtcode(indir, set_):
             c = data.split("\t")[1].replace(" ", ".")
             text[f] = t
             codes[f] = c
+            print(f, t)
+            print(f, c)
         except:
             continue
     return text, codes
@@ -52,8 +54,8 @@ def save_sp(outfolder, strings, codes, set_):
     for f in set_:
         string1 = strings[f]
         string2 = codes[f]
-        print(type(string1), string1)
-        print(type(string2), string2)
+#        print(type(string1), string1)
+#        print(type(string2), string2)
         outfile = outfolder+"/"+f+".txt"
         output = open(outfile, "w")
         outstring = string1 + "\t" + string2
@@ -77,7 +79,7 @@ def revise_codes(code, model, set_):
         rev_code = s.encode(kanjistring, out_type=str)
         rev_code_id = s.encode(kanjistring, out_type=int)
         rev_code_id = [str(c) for c in rev_code_id]
-        print("orig", len(codestring), "kanji", len(kanjilist), "SP", len(rev_code_id))
+#        print("orig", len(codestring), "kanji", len(kanjilist), "SP", len(rev_code_id))
         revised_codes[f] = " ".join(rev_code_id)
     return revised_codes
 
