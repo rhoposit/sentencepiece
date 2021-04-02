@@ -52,6 +52,8 @@ def save_sp(outfolder, strings, codes, set_):
     for f in set_:
         string1 = strings[f]
         string2 = codes[f]
+        print(type(string1), string1)
+        print(type(string2), string2)
         outfile = outfolder+"/"+f+".txt"
         output = open(outfile, "w")
         outstring = string1 + "\t" + string2
