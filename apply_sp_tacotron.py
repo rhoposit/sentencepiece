@@ -56,8 +56,8 @@ def save_sp(outfolder, text, codes, set_):
     for f in set_:
         string1 = text[f]
         string2 = codes[f]
-        print(f, type(string1), string1)
-        print(f, type(string2), string2)
+#        print(f, type(string1), string1)
+#        print(f, type(string2), string2)
         outfile = outfolder+"/"+f+".txt"
         output = open(outfile, "w")
         outstring = string1 + "\t" + string2
@@ -140,6 +140,8 @@ set_files = load_set(test_set)
 text, code = load_txtcode(infolder, set_files)
 phn = load_phones(phnfolder, set_files)
 code_revised = revise_codes(code, sp_model, set_files)
+for k,v in text.items():
+    print(k,v)
 save_sp(spout_folder_text, text, code_revised, set_files)
 save_sp(spout_folder_phones, phn, code_revised, set_files)
 
