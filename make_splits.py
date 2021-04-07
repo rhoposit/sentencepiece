@@ -51,6 +51,12 @@ if data_type == "vctk":
     validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
 #    infolder = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_512"
     infolder = "/home/s1738075/special/L1_dat_files/sys5/vctk_753011/all_vctk_170"
+if data_type == "sys2":
+    outfolder= "all_vctk_sys2_92"
+    test_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/test.csv"
+    training_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/train.csv"
+    validation_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/validation.csv"
+    infolder = "/home/s1738075/special/L1_dat_files/sys2/vctk_702121/all_vctk_sys2_92"
 elif data_type == "phn50":
     outfolder= "all_vctk_phn_50"
     test_set = "/home/s1738075/taco_modified/self_attention_tacotron/examples/codes/test.csv"
